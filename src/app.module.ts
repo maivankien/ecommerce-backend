@@ -4,10 +4,15 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MorganMiddleware } from './common/middlewares/morgan.middleware';
 import { HelmetMiddleware } from './common/middlewares/helmet.middleware';
 import { CompressionMiddleware } from './common/middlewares/compression.middleware';
+import { MongoDBProviderModule } from './providers/database/mongodb/provider.module';
+import { AppConfigModule } from './config/app/config.module';
 
 
 @Module({
-    imports: [],
+    imports: [
+        AppConfigModule,
+        MongoDBProviderModule,
+    ],
     controllers: [AppController],
     providers: [AppService],
 })
