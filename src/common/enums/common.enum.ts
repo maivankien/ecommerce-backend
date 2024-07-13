@@ -15,3 +15,12 @@ export enum RoleShopEnum {
     EDITOR = 'EDITOR',
     ADMIN = 'ADMIN'
 }
+
+export enum HeaderApiEnum {
+    API_KEY = 'x-api-key',
+    AUTHORIZATION = 'authorization'
+}
+
+export enum PermissionApiKeyEnum {
+    BASIC = "0000"
+}

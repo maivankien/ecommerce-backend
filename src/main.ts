@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SwaggerModule } from '@nestjs/swagger';
 import { AppConfigService } from './config/app/config.service';
 import { INestApplication, VersioningType } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { createSwaggerConfig } from './config/swagger/swagger.config';
 
 async function bootstrap() {
     const app: INestApplication = await NestFactory.create(AppModule)
@@ -13,11 +14,7 @@ async function bootstrap() {
         type: VersioningType.URI,
     })
 
-    const swaggerConfig = new DocumentBuilder()
-        .setTitle('Backend Ecommerce Api')
-        .setDescription('Learning from a Tips JavaScript channel. Built with NestJS.')
-        .setVersion('1.0')
-        .build()
+    const swaggerConfig = createSwaggerConfig()
 
     app.enableCors()
 
