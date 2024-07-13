@@ -1,8 +1,6 @@
-import * as crypto from 'crypto';
+import * as _ from 'lodash';
 
-export const generatePrivateAndPublicKey = () => {
-    const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-        modulusLength: 4096,
-    })
-    return { privateKey, publicKey }
+
+export const getInfoData = (fields: string[], object: object) => {
+    return _.pick(object, fields)
 }
