@@ -43,10 +43,8 @@ export class ShopService extends BaseServiceAbstract<Shop> {
         const tokens = createTokenPair({ userId: newShop._id, email: input.email, roles: newShop.roles }, publicKey, privateKey)
 
         return {
-            metadata: {
-                tokens: tokens,
-                shop: getInfoData(["_id", "name", "email", "roles"], newShop)
-            }
+            tokens: tokens,
+            shop: getInfoData(["_id", "name", "email", "roles"], newShop)
         }
     }
 }
