@@ -1,15 +1,15 @@
 import { AppService } from './app.service';
 import { RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
-import { ShopModule } from './modules/v1/shop/shop.module';
-import { AppConfigModule } from './config/app/config.module';
-import { AuthModule } from './modules/v1/auth/auth.module';
+import { ShopModule } from '@modules/v1/shop/shop.module';
+import { AppConfigModule } from '@config/app/config.module';
+import { AuthModule } from '@modules/v1/auth/auth.module';
+import { PermissionApiKeyEnum } from '@common/enums/common.enum';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongoDBProviderModule } from './providers/database/mongodb/provider.module';
-import { ApiKeyMiddleware } from './common/middlewares/auth/api-key.middleware';
-import { permissionMiddleware } from './common/middlewares/auth/permission.middleware';
-import { PermissionApiKeyEnum } from './common/enums/common.enum';
-import { CombinedMiddleware } from './common/middlewares/common/combined.middleware';
+import { permissionMiddleware } from '@common/middlewares/auth/permission.middleware';
+import { CombinedMiddleware } from '@common/middlewares/common/combined.middleware';
+import { ApiKeyMiddleware } from '@common/middlewares/auth/api-key.middleware';
 
 
 @Module({

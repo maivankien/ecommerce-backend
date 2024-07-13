@@ -2,7 +2,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { ShopService } from "./shop.service";
 import { SignUpShopDto } from "./dtos/shop.dto";
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { ApiVersionEnum } from "src/common/enums/common.enum";
+import { ApiVersionEnum } from "@common/enums/common.enum";
 import { Shop } from "./entities/shop.entity";
 
 

@@ -1,7 +1,7 @@
 import { HeaderApiEnum } from "../../enums/common.enum";
 import { NextFunction, Response } from 'express';
 import { RequestApiKey } from "../../interfaces/common.interface";
-import { ApiKeyService } from "src/modules/v1/auth/services/api-key.service";
+import { ApiKeyService } from "@modules/v1/auth/services/api-key.service";
 import { ForbiddenException, Injectable, NestMiddleware } from "@nestjs/common";
 
 

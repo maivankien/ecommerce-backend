@@ -1,5 +1,5 @@
 import { DocumentBuilder } from '@nestjs/swagger';
-import { HeaderApiEnum } from 'src/common/enums/common.enum';
+import { HeaderApiEnum } from '@common/enums/common.enum';
 
 
 export const createSwaggerConfig = () => {

@@ -1,7 +1,7 @@
 import { HydratedDocument } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { PermissionApiKeyEnum } from "src/common/enums/common.enum";
-import { BaseMongoDBEntity } from "src/common/mongo/base/base.mongo.entity";
+import { PermissionApiKeyEnum } from "@common/enums/common.enum";
+import { BaseMongoDBEntity } from "@common/mongo/base/base.mongo.entity";
 
 
 export type ApiKeyDocument = HydratedDocument<ApiKey>

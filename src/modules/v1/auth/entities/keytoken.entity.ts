@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { HydratedDocument } from "mongoose";
-import { Shop } from "../../shop/entities/shop.entity";
+import { Shop } from "@modules/v1/shop/entities/shop.entity";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { BaseMongoDBEntity } from "src/common/mongo/base/base.mongo.entity";
+import { BaseMongoDBEntity } from "@common/mongo/base/base.mongo.entity";
 
 
 export type KeyTokenDocument = HydratedDocument<KeyToken>

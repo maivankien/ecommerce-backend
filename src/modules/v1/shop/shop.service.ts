@@ -1,14 +1,13 @@
 import * as bcrypt from 'bcrypt'
-import * as crypto from 'crypto'
 import { Shop } from "./entities/shop.entity";
 import { ConflictException, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ShopRepositoryInterface } from "./interface/shop.interface";
-import { SALT_ROUNDS } from 'src/common/constants/common.constants';
-import { BaseServiceAbstract } from "src/common/mongo/base/services/base.abstract.service";
-import { RoleShopEnum } from 'src/common/enums/common.enum';
+import { SALT_ROUNDS } from '@common/constants/common.constants';
+import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
+import { RoleShopEnum } from '@common/enums/common.enum';
 import { KeyTokenService } from '../auth/services/keytoken.service';
-import { createTokenPair, generatePrivateAndPublicKey } from 'src/common/utils/auth.util';
-import { getInfoData } from 'src/common/utils/common.util';
+import { createTokenPair, generatePrivateAndPublicKey } from '@common/utils/auth.util';
+import { getInfoData } from '@common/utils/common.util';
 
 
 @Injectable()

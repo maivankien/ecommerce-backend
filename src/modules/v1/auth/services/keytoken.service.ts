@@ -1,9 +1,8 @@
-import { KeyObject } from "crypto";
-import { ObjectId, Types } from "mongoose";
+import { Types } from "mongoose";
 import { Inject, Injectable } from "@nestjs/common";
 import { KeyToken } from "../entities/keytoken.entity";
 import { KeyTokenRepositoryInterface } from "../interface/keytoken.interface";
-import { BaseServiceAbstract } from "src/common/mongo/base/services/base.abstract.service";
+import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
 
 
 @Injectable()

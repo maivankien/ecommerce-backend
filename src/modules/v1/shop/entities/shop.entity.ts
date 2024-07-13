@@ -1,7 +1,7 @@
 import { HydratedDocument, ObjectId } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { BaseMongoDBEntity } from "src/common/mongo/base/base.mongo.entity";
-import { StatusShopEnum } from "src/common/enums/common.enum";
+import { BaseMongoDBEntity } from "@common/mongo/base/base.mongo.entity";
+import { StatusShopEnum } from "@common/enums/common.enum";
 
 
 export type ShopDocument = HydratedDocument<Shop>

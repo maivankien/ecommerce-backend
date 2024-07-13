@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MAX_POOL_SIZE_MONGO, TIME_OUT_CONNECT_MONGO } from 'src/common/constants/common.constants';
+import { MAX_POOL_SIZE_MONGO, TIME_OUT_CONNECT_MONGO } from '@common/constants/common.constants';
 import { MongooseModule, MongooseModuleAsyncOptions } from '@nestjs/mongoose';
 import { MongodbConfigModule } from 'src/config/database/mongo/config.module';
 import { MongodbConfigService } from 'src/config/database/mongo/config.service';

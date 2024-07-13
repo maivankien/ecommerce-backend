@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { KeyToken, KeyTokenDocument } from "../entities/keytoken.entity";
 import { KeyTokenRepositoryInterface } from "../interface/keytoken.interface";
-import { BaseRepositoryAbstract } from "src/common/mongo/base/repositories/base.abstract.repository";
+import { BaseRepositoryAbstract } from "@common/mongo/base/repositories/base.abstract.repository";
 
 
 @Injectable()
