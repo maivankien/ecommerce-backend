@@ -1,6 +1,6 @@
 import { BaseMongoDBEntity } from '../base.mongo.entity';
 import { BaseRepositoryInterface } from './base.interface.repository';
-import { FilterQuery, Model, PipelineStage, ProjectionType, QueryOptions, PopulateOptions } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, ProjectionType, QueryOptions, PopulateOptions, UpdateQuery } from 'mongoose';
 
 export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
     implements BaseRepositoryInterface<T> {
@@ -12,6 +12,10 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         const result = await this.model.create(dto)
         await result.save()
         return result
+    }
+
+    async findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T> {
+        return await this.model.findOneAndUpdate(filter, update, options).lean()
     }
 
     async findOneById(

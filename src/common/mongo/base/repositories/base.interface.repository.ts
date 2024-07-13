@@ -1,4 +1,4 @@
-import { FilterQuery, ProjectionType, QueryOptions, PopulateOptions } from 'mongoose';
+import { FilterQuery, ProjectionType, QueryOptions, PopulateOptions, UpdateQuery } from 'mongoose';
 
 export interface BaseRepositoryInterface<T> {
     create(dto: T): Promise<T>
@@ -8,6 +8,8 @@ export interface BaseRepositoryInterface<T> {
         projection?: ProjectionType<T>,
         options?: QueryOptions<T>
     ): Promise<T>
+
+    findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T>
 
     findOneByCondition(
         condition?: object,

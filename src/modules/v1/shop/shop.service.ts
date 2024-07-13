@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt'
 import { Shop } from "./entities/shop.entity";
-import { ConflictException, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Inject, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { ShopRepositoryInterface } from "./interface/shop.interface";
 import { SALT_ROUNDS } from '@common/constants/common.constants';
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
@@ -33,18 +33,49 @@ export class ShopService extends BaseServiceAbstract<Shop> {
             throw new InternalServerErrorException("Failed to create new Shop")
         }
 
+
         const { privateKey, publicKey } = generatePrivateAndPublicKey()
-        const publicKeyString = await this.keyTokenService.createKeyToken({ userId: newShop._id, publicKey, privateKey })
+        const tokens = createTokenPair({ userId: newShop._id, email: input.email, roles: newShop.roles }, publicKey, privateKey)
+
+        const publicKeyString = await this.keyTokenService.createKeyToken({ userId: newShop._id, publicKey, privateKey, refreshToken: tokens.refreshToken })
 
         if (!publicKeyString) {
             throw new InternalServerErrorException("Failed to create public key")
         }
 
-        const tokens = createTokenPair({ userId: newShop._id, email: input.email, roles: newShop.roles }, publicKey, privateKey)
-
         return {
             tokens: tokens,
             shop: getInfoData(["_id", "name", "email", "roles"], newShop)
+        }
+    }
+
+    public async loginShop({ email, password, refreshToken }: { email: string, password: string, refreshToken: string }) {
+        const foundShop = await this.shopRepository.findOneByCondition({
+            email: email
+        }, {
+            email: 1,
+            name: 1,
+            status: 1,
+            roles: 1,
+            password: 1,
+        })
+
+        if (!foundShop) {
+            throw new BadRequestException('Email or password is incorrect')
+        }
+
+        const match = await bcrypt.compare(password, foundShop.password)
+        if (!match) {
+            throw new BadRequestException('Email or password is incorrect')
+        }
+
+        const { privateKey, publicKey } = generatePrivateAndPublicKey()
+        const tokens = createTokenPair({ userId: foundShop._id, email: email, roles: foundShop.roles }, publicKey, privateKey)
+
+        await this.keyTokenService.createKeyToken({ userId: foundShop._id, publicKey, privateKey, refreshToken })
+        return {
+            tokens: tokens,
+            shop: getInfoData(["_id", "name", "email", "roles"], foundShop)
         }
     }
 }

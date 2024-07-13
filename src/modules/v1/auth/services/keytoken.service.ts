@@ -14,14 +14,18 @@ export class KeyTokenService extends BaseServiceAbstract<KeyToken> {
         super(keyTokenRepository)
     }
 
-    public async createKeyToken(input: { userId: Types.ObjectId, publicKey: string, privateKey: string }): Promise<string> {
-        const { userId, publicKey, privateKey } = input
+    public async createKeyToken(input: { userId: Types.ObjectId, publicKey: string, privateKey: string, refreshToken: string }): Promise<string> {
+        const filter = { user: input.userId }
+        const options = { upsert: true, new: true }
 
-        const tokens = await this.keyTokenRepository.create({
-            user: userId,
-            publicKey: publicKey.toString(),
-            privateKey: privateKey.toString()
-        } as KeyToken)
+        const update = {
+            refreshTokenUsed: [],
+            publicKey: input.publicKey,
+            privateKey: input.privateKey,
+            refreshToken: input.refreshToken
+        }
+
+        const tokens = await this.keyTokenRepository.findOneAndUpdate(filter, update, options)
 
         return tokens ? tokens.publicKey : null
     }

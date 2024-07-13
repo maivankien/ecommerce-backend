@@ -12,6 +12,10 @@ export abstract class BaseServiceAbstract<T extends BaseMongoDBEntity>
         return await this.repository.create(input)
     }
 
+    async findOneAndUpdate(filter: FilterQuery<T>, update: Partial<T>, options?: QueryOptions<T>): Promise<T> {
+        return await this.repository.findOneAndUpdate(filter, update, options)
+    }
+
     async find(
         filter: FilterQuery<T>,
         projection?: ProjectionType<T>,
