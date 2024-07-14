@@ -35,7 +35,7 @@ export const createTokenPair = (payload: object, publicKey: string, privateKey: 
     }
 }
 
-export const verifyToken = (token: string, publicKey: string): object => {
+export const verifyToken = (token: string, publicKey: string) => {
     try {
         return jwt.verify(token, publicKey)
     } catch (error) {

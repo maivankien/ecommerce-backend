@@ -19,11 +19,13 @@ export class KeyTokenService extends BaseServiceAbstract<KeyToken> {
         const options = { upsert: true, new: true }
 
         const update = {
+            deleted_at: null,
             refreshTokenUsed: [],
             publicKey: input.publicKey,
             privateKey: input.privateKey,
             refreshToken: input.refreshToken
         }
+        console.log('update', update)
 
         const tokens = await this.keyTokenRepository.findOneAndUpdate(filter, update, options)
 

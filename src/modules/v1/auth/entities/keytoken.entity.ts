@@ -22,7 +22,7 @@ export class KeyToken extends BaseMongoDBEntity {
     @Prop({ type: String, required: true })
     privateKey: string
 
-    @Prop({ type: String, required: true})
+    @Prop({ type: String, required: true })
     refreshToken: string
 
     @Prop({ type: [String], required: false, default: [] })

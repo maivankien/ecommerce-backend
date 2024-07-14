@@ -1,7 +1,7 @@
 import { BaseServiceInterface } from "./base.interface.service";
 import { BaseMongoDBEntity } from "../base.mongo.entity";
 import { BaseRepositoryInterface } from "../repositories/base.interface.repository";
-import { FilterQuery, PopulateOptions, ProjectionType, QueryOptions } from "mongoose";
+import { FilterQuery, PopulateOptions, ProjectionType, QueryOptions, UpdateQuery } from "mongoose";
 
 
 export abstract class BaseServiceAbstract<T extends BaseMongoDBEntity>
@@ -32,11 +32,11 @@ export abstract class BaseServiceAbstract<T extends BaseMongoDBEntity>
         return await this.repository.findOneById(id, projection, options)
     }
 
-    async findOneByCondition(filter: Partial<T>, projection?: ProjectionType<T>, populate?: PopulateOptions | PopulateOptions[]): Promise<T> {
+    async findOneByCondition(filter: FilterQuery<T>, projection?: ProjectionType<T>, populate?: PopulateOptions | PopulateOptions[]): Promise<T> {
         return await this.repository.findOneByCondition(filter, projection, populate)
     }
 
-    async update(id: string, input: Partial<T>): Promise<T> {
+    async update(id: string, input: UpdateQuery<T>): Promise<T> {
         return await this.repository.update(id, input)
     }
 

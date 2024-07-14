@@ -12,7 +12,7 @@ export interface BaseRepositoryInterface<T> {
     findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T>
 
     findOneByCondition(
-        condition?: object,
+        condition?: FilterQuery<T>,
         projection?: ProjectionType<T>,
         populate?: PopulateOptions | PopulateOptions[]
     ): Promise<T>

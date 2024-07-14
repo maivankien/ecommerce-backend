@@ -1,13 +1,16 @@
 import * as bcrypt from 'bcrypt'
 import { Shop } from "./entities/shop.entity";
-import { BadRequestException, ConflictException, Inject, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { ShopRepositoryInterface } from "./interface/shop.interface";
 import { SALT_ROUNDS } from '@common/constants/common.constants';
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
 import { RoleShopEnum } from '@common/enums/common.enum';
 import { KeyTokenService } from '../auth/services/keytoken.service';
-import { createTokenPair, generatePrivateAndPublicKey } from '@common/utils/auth.util';
+import { createTokenPair, generatePrivateAndPublicKey, verifyToken } from '@common/utils/auth.util';
 import { getInfoData } from '@common/utils/common.util';
+import {
+    BadRequestException, ConflictException,
+    ForbiddenException, Inject, Injectable, InternalServerErrorException, UnauthorizedException
+} from "@nestjs/common";
 
 
 @Injectable()
@@ -49,7 +52,7 @@ export class ShopService extends BaseServiceAbstract<Shop> {
         }
     }
 
-    public async loginShop({ email, password, refreshToken }: { email: string, password: string, refreshToken: string }) {
+    public async loginShop({ email, password }: { email: string, password: string }) {
         const foundShop = await this.shopRepository.findOneByCondition({
             email: email
         }, {
@@ -72,10 +75,54 @@ export class ShopService extends BaseServiceAbstract<Shop> {
         const { privateKey, publicKey } = generatePrivateAndPublicKey()
         const tokens = createTokenPair({ userId: foundShop._id, email: email, roles: foundShop.roles }, publicKey, privateKey)
 
-        await this.keyTokenService.createKeyToken({ userId: foundShop._id, publicKey, privateKey, refreshToken })
+        await this.keyTokenService.createKeyToken({ userId: foundShop._id, publicKey, privateKey, refreshToken: tokens.refreshToken })
         return {
             tokens: tokens,
             shop: getInfoData(["_id", "name", "email", "roles"], foundShop)
+        }
+    }
+
+    public async handleRefreshToken({ refreshToken }: { refreshToken: string }) {
+        const projection = { _id: 1, publicKey: 1, privateKey: 1 }
+        const foundToken = await this.keyTokenService.findOneByCondition({ refreshTokensUsed: refreshToken }, projection)
+
+        if (foundToken) {
+            verifyToken(refreshToken, foundToken.publicKey)
+            await this.keyTokenService.remove(foundToken._id.toString())
+            throw new ForbiddenException('Something wrong happened !! Please login again.')
+        }
+
+        const holderToken = await this.keyTokenService.findOneByCondition({ refreshToken }, projection)
+        if (!holderToken) {
+            throw new UnauthorizedException('Invalid refresh token')
+        }
+
+        const { userId, email } = verifyToken(refreshToken, holderToken.publicKey)
+        const foundShop = await this.shopRepository.findOneById(userId, {
+            email: 1,
+            name: 1,
+            roles: 1,
+        })
+
+        if (!foundShop) {
+            throw new UnauthorizedException('Shop not registered')
+        }
+
+        // Create new accessToken and refreshToken
+        const tokens = createTokenPair({ userId: foundShop._id, email: email, roles: foundShop.roles }, holderToken.publicKey, holderToken.privateKey)
+
+        await this.keyTokenService.update(holderToken._id.toString(), {
+            $set: {
+                refreshToken: tokens.refreshToken
+            },
+            $addToSet: {
+                refreshTokensUsed: refreshToken
+            }
+        })
+
+        return {
+            tokens: tokens,
+            shop: foundShop
         }
     }
 }

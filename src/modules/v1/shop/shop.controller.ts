@@ -1,4 +1,4 @@
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { ShopService } from "./shop.service";
 import { LoginShopDto, SignUpShopDto } from "./dtos/shop.dto";
 import { Body, Controller, Get, Post, Res } from "@nestjs/common";
@@ -35,5 +35,11 @@ export class ShopController {
     public async logout(@RequestData('keyStore') keyStore: KeyToken, @Res() res: Response) {
         await this.keyTokenService.remove((keyStore._id).toString())
         return SuccessResponse(res, "Success")
+    }
+
+    @Post('refresh-token')
+    @ApiBody({ schema: { type: 'object', properties: { refreshToken: { type: 'string' } } } })
+    public async refreshToken(@Body('refreshToken') refreshToken: string, @Res() res: Response) {
+        return SuccessResponse(res, "Success", await this.shopService.handleRefreshToken({ refreshToken }))
     }
 }
