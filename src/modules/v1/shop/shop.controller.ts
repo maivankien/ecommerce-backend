@@ -6,12 +6,17 @@ import { ApiVersionEnum } from "@common/enums/common.enum";
 import { Shop } from "./entities/shop.entity";
 import { CreatedResponse, SuccessResponse } from "@common/core/success.response";
 import { Response } from "express";
+import { RequestData } from "@common/decorators/requests/request-data.decorator";
+import { KeyToken } from "../auth/entities/keytoken.entity";
+import { KeyTokenService } from "../auth/services/keytoken.service";
 
 @ApiTags('Shop')
 @Controller({ version: ApiVersionEnum.V1 })
 export class ShopController {
     constructor(
-        private readonly shopService: ShopService
+        private readonly shopService: ShopService,
+
+        private readonly keyTokenService: KeyTokenService
     ) { }
 
     @Post('signup')
@@ -24,5 +29,11 @@ export class ShopController {
     @Post('login')
     public async login(@Body() input: LoginShopDto, @Res() res: Response) {
         return SuccessResponse(res, "Success", await this.shopService.loginShop(input))
+    }
+
+    @Post('logout')
+    public async logout(@RequestData('keyStore') keyStore: KeyToken, @Res() res: Response) {
+        await this.keyTokenService.remove((keyStore._id).toString())
+        return SuccessResponse(res, "Success")
     }
 }

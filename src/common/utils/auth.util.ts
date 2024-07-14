@@ -1,5 +1,6 @@
 import * as crypto from 'crypto';
 import * as jwt from "jsonwebtoken"
+import { ForbiddenException } from '@nestjs/common';
 
 
 export const generatePrivateAndPublicKey = (): { publicKey: string, privateKey: string } => {
@@ -31,5 +32,13 @@ export const createTokenPair = (payload: object, publicKey: string, privateKey: 
     return {
         accessToken,
         refreshToken,
+    }
+}
+
+export const verifyToken = (token: string, publicKey: string): object => {
+    try {
+        return jwt.verify(token, publicKey)
+    } catch (error) {
+        throw new ForbiddenException(error.message)
     }
 }
