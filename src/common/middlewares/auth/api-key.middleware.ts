@@ -1,6 +1,6 @@
 import { HeaderApiEnum } from "../../enums/common.enum";
 import { NextFunction, Response } from 'express';
-import { RequestApiKey } from "../../interfaces/common.interface";
+import { CustomRequest } from "../../interfaces/common.interface";
 import { ApiKeyService } from "@modules/v1/auth/services/api-key.service";
 import { ForbiddenException, Injectable, NestMiddleware } from "@nestjs/common";
 
@@ -11,7 +11,7 @@ export class ApiKeyMiddleware implements NestMiddleware {
         private readonly apiKeyService: ApiKeyService
     ) { }
 
-    async use(req: RequestApiKey, res: Response, next: NextFunction) {
+    async use(req: CustomRequest, res: Response, next: NextFunction) {
         const key = req.headers[HeaderApiEnum.API_KEY]?.toString()
 
         if (!key) throw new ForbiddenException('API key is required')

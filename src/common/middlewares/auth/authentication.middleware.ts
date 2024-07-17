@@ -26,13 +26,26 @@ export class AuthenticationMiddleware implements NestMiddleware {
             throw new UnauthorizedException('Invalid request')
         }
 
+        const refreshToken = req.headers[HeaderApiEnum.REFRESH_TOKEN]
+        if (refreshToken) {
+            const decodeUser = verifyToken(refreshToken, keyStore.privateKey)
+
+            if (userId !== decodeUser?.userId) {
+                throw new UnauthorizedException('Invalid request')
+            }
+            req.user = decodeUser
+            req.keyStore = keyStore
+            req.refreshToken = refreshToken
+            return next()
+        }
+
         const accessToken = req.headers[HeaderApiEnum.AUTHORIZATION]
         if (!accessToken) {
             throw new UnauthorizedException('Invalid request')
         }
 
         const decodeUser = verifyToken(accessToken, keyStore.publicKey)
-        if (userId !== decodeUser?.["userId"]) {
+        if (userId !== decodeUser?.userId) {
             throw new UnauthorizedException('Invalid request')
         }
 

@@ -35,6 +35,7 @@ export class ShopModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthenticationMiddleware).forRoutes(
             { path: 'v1/shop/logout', method: RequestMethod.POST },
+            { path: 'v1/shop/refresh-token', method: RequestMethod.POST }
         )
     }
 }

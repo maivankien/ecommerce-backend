@@ -5,12 +5,14 @@ import { SALT_ROUNDS } from '@common/constants/common.constants';
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
 import { RoleShopEnum } from '@common/enums/common.enum';
 import { KeyTokenService } from '../auth/services/keytoken.service';
-import { createTokenPair, generatePrivateAndPublicKey, verifyToken } from '@common/utils/auth.util';
+import { createTokenPair, generatePrivateAndPublicKey } from '@common/utils/auth.util';
 import { getInfoData } from '@common/utils/common.util';
 import {
     BadRequestException, ConflictException,
     ForbiddenException, Inject, Injectable, InternalServerErrorException, UnauthorizedException
 } from "@nestjs/common";
+import { KeyToken } from '../auth/entities/keytoken.entity';
+import { PayloadJwt } from '@common/interfaces/common.interface';
 
 
 @Injectable()
@@ -82,22 +84,18 @@ export class ShopService extends BaseServiceAbstract<Shop> {
         }
     }
 
-    public async handleRefreshToken({ refreshToken }: { refreshToken: string }) {
-        const projection = { _id: 1, publicKey: 1, privateKey: 1 }
-        const foundToken = await this.keyTokenService.findOneByCondition({ refreshTokensUsed: refreshToken }, projection)
+    public async handleRefreshToken({ refreshToken, user, keyStore }: { refreshToken: string, user: PayloadJwt, keyStore: KeyToken }) {
+        const { userId, email } = user
 
-        if (foundToken) {
-            verifyToken(refreshToken, foundToken.publicKey)
-            await this.keyTokenService.remove(foundToken._id.toString())
+        if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+            await this.keyTokenService.remove(keyStore._id.toString())
             throw new ForbiddenException('Something wrong happened !! Please login again.')
         }
 
-        const holderToken = await this.keyTokenService.findOneByCondition({ refreshToken }, projection)
-        if (!holderToken) {
+        if (keyStore.refreshToken !== refreshToken) {
             throw new UnauthorizedException('Invalid refresh token')
         }
 
-        const { userId, email } = verifyToken(refreshToken, holderToken.publicKey)
         const foundShop = await this.shopRepository.findOneById(userId, {
             email: 1,
             name: 1,
@@ -109,9 +107,9 @@ export class ShopService extends BaseServiceAbstract<Shop> {
         }
 
         // Create new accessToken and refreshToken
-        const tokens = createTokenPair({ userId: foundShop._id, email: email, roles: foundShop.roles }, holderToken.publicKey, holderToken.privateKey)
+        const tokens = createTokenPair({ userId: foundShop._id, email: email, roles: foundShop.roles }, keyStore.publicKey, keyStore.privateKey)
 
-        await this.keyTokenService.update(holderToken._id.toString(), {
+        await this.keyTokenService.update(keyStore._id.toString(), {
             $set: {
                 refreshToken: tokens.refreshToken
             },

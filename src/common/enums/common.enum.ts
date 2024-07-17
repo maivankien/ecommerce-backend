@@ -19,7 +19,8 @@ export enum RoleShopEnum {
 export enum HeaderApiEnum {
     API_KEY = 'x-api-key',
     CLIENT_ID = 'x-client-id',
-    AUTHORIZATION = 'authorization'
+    AUTHORIZATION = 'authorization',
+    REFRESH_TOKEN = 'refresh-token'
 }
 
 export enum PermissionApiKeyEnum {

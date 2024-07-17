@@ -1,7 +1,7 @@
-import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { ShopService } from "./shop.service";
 import { LoginShopDto, SignUpShopDto } from "./dtos/shop.dto";
-import { Body, Controller, Get, Post, Res } from "@nestjs/common";
+import { Body, Controller, Post, Res } from "@nestjs/common";
 import { ApiVersionEnum } from "@common/enums/common.enum";
 import { Shop } from "./entities/shop.entity";
 import { CreatedResponse, SuccessResponse } from "@common/core/success.response";
@@ -9,6 +9,7 @@ import { Response } from "express";
 import { RequestData } from "@common/decorators/requests/request-data.decorator";
 import { KeyToken } from "../auth/entities/keytoken.entity";
 import { KeyTokenService } from "../auth/services/keytoken.service";
+import { PayloadJwt } from "@common/interfaces/common.interface";
 
 @ApiTags('Shop')
 @Controller({ version: ApiVersionEnum.V1 })
@@ -38,8 +39,12 @@ export class ShopController {
     }
 
     @Post('refresh-token')
-    @ApiBody({ schema: { type: 'object', properties: { refreshToken: { type: 'string' } } } })
-    public async refreshToken(@Body('refreshToken') refreshToken: string, @Res() res: Response) {
-        return SuccessResponse(res, "Success", await this.shopService.handleRefreshToken({ refreshToken }))
+    public async refreshToken(
+        @Res() res: Response,
+        @RequestData('user') user: PayloadJwt,
+        @RequestData('keyStore') keyStore: KeyToken,
+        @RequestData('refreshToken') refreshToken: string,
+    ) {
+        return SuccessResponse(res, "Success", await this.shopService.handleRefreshToken({ refreshToken, user, keyStore }))
     }
 }
