@@ -10,6 +10,7 @@ import { MongoDBProviderModule } from './providers/database/mongodb/provider.mod
 import { permissionMiddleware } from '@common/middlewares/auth/permission.middleware';
 import { CombinedMiddleware } from '@common/middlewares/common/combined.middleware';
 import { ApiKeyMiddleware } from '@common/middlewares/auth/api-key.middleware';
+import { ProductModule } from '@modules/v1/product/product.module';
 
 
 @Module({
@@ -18,10 +19,15 @@ import { ApiKeyMiddleware } from '@common/middlewares/auth/api-key.middleware';
         MongoDBProviderModule,
         ShopModule,
         AuthModule,
+        ProductModule,
         RouterModule.register([
             {
                 path: 'shop',
                 module: ShopModule
+            },
+            {
+                path: 'product',
+                module: ProductModule
             }
         ])
     ],

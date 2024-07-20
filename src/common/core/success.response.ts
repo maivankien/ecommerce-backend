@@ -1,7 +1,10 @@
 import { Response } from "express"
 import { HttpStatus } from "@nestjs/common"
 
-export const CreatedResponse = (res: Response, message: string, data: object = null, options: object = null) => {
+const MESSAGE_CREATED = "Created"
+const MESSAGE_SUCCESS = "Success"
+
+export const CreatedResponse = (res: Response, message: string = MESSAGE_CREATED, data: object = null, options: object = null) => {
     return res.status(HttpStatus.CREATED).json({
         message: message,
         data: data,
@@ -9,7 +12,7 @@ export const CreatedResponse = (res: Response, message: string, data: object = n
     })
 }
 
-export const SuccessResponse = (res: Response, message: string, data: object = null, options: object = null) => {
+export const SuccessResponse = (res: Response, message: string = MESSAGE_SUCCESS, data: object = null, options: object = null) => {
     return res.status(HttpStatus.OK).json({
         message: message,
         data: data,

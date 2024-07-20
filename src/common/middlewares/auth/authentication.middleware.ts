@@ -49,6 +49,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
             throw new UnauthorizedException('Invalid request')
         }
 
+        req.user = decodeUser
         req.keyStore = keyStore
         return next()
     }
