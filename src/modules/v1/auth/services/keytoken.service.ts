@@ -25,7 +25,6 @@ export class KeyTokenService extends BaseServiceAbstract<KeyToken> {
             privateKey: input.privateKey,
             refreshToken: input.refreshToken
         }
-        console.log('update', update)
 
         const tokens = await this.keyTokenRepository.findOneAndUpdate(filter, update, options)
 
