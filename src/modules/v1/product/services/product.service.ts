@@ -1,9 +1,10 @@
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { Product } from "../entities/product.entity";
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { ProductTypeFactory } from "../interface/product-type.interface";
 import { ProductRepositoryInterface } from "../interface/product.interface";
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
+import { getSelectData, unGetSelectData } from "@common/utils/common.util";
 
 
 @Injectable()
@@ -44,6 +45,16 @@ export class ProductService extends BaseServiceAbstract<Product> {
         }
 
         return await productClass.createProduct(payload)
+    }
+
+    async updateProductService(type: string, payload: Product) {
+        const productClass = this.productRegistry.get(type)
+
+        if (!productClass) {
+            throw new BadRequestException(`Product type \`${type}\` not found.`)
+        }
+
+        // return await productClass.createProduct(payload)
     }
 
     async findAllDraftsForShop(product_shop: string, limit: number, skip: number) {
@@ -101,6 +112,28 @@ export class ProductService extends BaseServiceAbstract<Product> {
         )
 
         return results
+    }
+
+    async findAllProducts(filter: FilterQuery<Product>, select: string[], sort: string, limit: number, skip: number) {
+        const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 }
+
+        const results = await this.productRepository.findAll({
+            ...filter,
+            isPublished: true
+        }, {
+            sort: sortBy,
+            limit: limit,
+            skip: skip,
+            projection: getSelectData(select)
+        })
+
+        return results
+    }
+
+    async findProduct(product_id: string, unSelect: string[]) {
+        return await this.productRepository.findOneByCondition({
+            _id: new Types.ObjectId(product_id)
+        }, unGetSelectData(unSelect))
     }
 }
 
