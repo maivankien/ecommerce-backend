@@ -10,7 +10,8 @@ import { PayloadJwt } from "@common/interfaces/common.interface";
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from "@common/constants/common.constants";
 import { CreatedResponse, SuccessResponse } from "@common/core/success.response";
 import { RequestData } from "@common/decorators/requests/request-data.decorator";
-import { Body, Controller, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Put, Query, Res } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
 
 
 @ApiTags('Product')
@@ -45,6 +46,19 @@ export class ProductController {
         } as Product)
 
         return CreatedResponse(res, "Success", result)
+    }
+
+    @Patch(':id')
+    async updateProduct(@Param('id') id: string, @Body() productDto: CreateProductDto, @Res() res: Response, @RequestData('user') user: PayloadJwt) {
+        const { product_type } = productDto
+
+        const productData = plainToInstance(CreateProductDto, productDto, { excludeExtraneousValues: true })
+        const result = await this.productService.updateProductService(product_type, id, user.userId, productData as Product)
+
+        if (!result) {
+            throw new BadRequestException("Product not found.")
+        }
+        return SuccessResponse(res, "Success", result)
     }
 
 

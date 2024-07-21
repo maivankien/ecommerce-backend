@@ -4,7 +4,7 @@ import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { ProductTypeFactory } from "../interface/product-type.interface";
 import { ProductRepositoryInterface } from "../interface/product.interface";
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
-import { getSelectData, unGetSelectData } from "@common/utils/common.util";
+import { createObjectId, getSelectData, unGetSelectData } from "@common/utils/common.util";
 
 
 @Injectable()
@@ -47,14 +47,17 @@ export class ProductService extends BaseServiceAbstract<Product> {
         return await productClass.createProduct(payload)
     }
 
-    async updateProductService(type: string, payload: Product) {
+    async updateProductService(type: string, productId: string, shopId: string, payload: Product) {
         const productClass = this.productRegistry.get(type)
 
         if (!productClass) {
             throw new BadRequestException(`Product type \`${type}\` not found.`)
         }
 
-        // return await productClass.createProduct(payload)
+        const shopIdObj = createObjectId(shopId)
+        const productIdObj = createObjectId(productId)
+
+        return await productClass.updateProduct(shopIdObj, productIdObj, payload)
     }
 
     async findAllDraftsForShop(product_shop: string, limit: number, skip: number) {

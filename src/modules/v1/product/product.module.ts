@@ -69,6 +69,7 @@ import { AuthenticationMiddleware } from "@common/middlewares/auth/authenticatio
 export class ProductModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthenticationMiddleware).forRoutes(
+            { path: 'v1/product/:id', method: RequestMethod.PATCH },
             { path: 'v1/product/create', method: RequestMethod.POST },
             { path: 'v1/product/drafts', method: RequestMethod.GET },
             { path: 'v1/product/publish', method: RequestMethod.GET },
