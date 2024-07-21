@@ -15,7 +15,10 @@ import {
     FurnituresRepository
 }
     from "./repositories/product-type.repository";
+import { InventoryService } from "./services/inventory.service";
 import { KeyTokenService } from "../auth/services/keytoken.service";
+import { Inventory, InventorySchema } from "./entities/inventory.entity";
+import { InventoryRepository } from "./repositories/inventory.repository";
 import { ProductServiceFactory } from "@common/factories/product/product.factory";
 import { KeyTokenRepository } from "../auth/repositories/keytoken.repository";
 import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
@@ -32,7 +35,8 @@ import { AuthenticationMiddleware } from "@common/middlewares/auth/authenticatio
             { name: Clothing.name, schema: ClothingSchema },
             { name: KeyToken.name, schema: KeyTokenSchema },
             { name: Electronics.name, schema: ElectronicsSchema },
-            { name: Furnitures.name, schema: FurnituresSchema }
+            { name: Furnitures.name, schema: FurnituresSchema },
+            { name: Inventory.name, schema: InventorySchema }
         ])
     ],
     controllers: [ProductController],
@@ -62,6 +66,11 @@ import { AuthenticationMiddleware } from "@common/middlewares/auth/authenticatio
         {
             provide: 'KeyTokenRepositoryInterface',
             useClass: KeyTokenRepository
+        },
+        InventoryService,
+        {
+            provide: 'InventoryRepositoryInterface',
+            useClass: InventoryRepository
         }
     ],
     exports: [ProductService]

@@ -20,7 +20,7 @@ export class ClothingDto {
 
     @Expose()
     @ApiProperty()
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
     material: string;
 }
