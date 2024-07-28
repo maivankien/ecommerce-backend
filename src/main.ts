@@ -20,7 +20,12 @@ async function bootstrap() {
     app.enableCors()
 
     const document = SwaggerModule.createDocument(app, swaggerConfig)
-    SwaggerModule.setup('docs', app, document)
+    SwaggerModule.setup('docs', app, document, {
+        customSiteTitle: 'Backend Ecommerce API',
+        swaggerOptions: {
+            persistAuthorization: true,
+        },
+    })
 
     await app.init()
 

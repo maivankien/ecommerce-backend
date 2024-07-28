@@ -4,7 +4,7 @@ import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { ProductTypeFactory } from "../interface/product-type.interface";
 import { ProductRepositoryInterface } from "../interface/product.interface";
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
-import { createObjectId, getSelectData, unGetSelectData } from "@common/utils/common.util";
+import { convertToObjectId, getSelectData, unGetSelectData } from "@common/utils/common.util";
 
 
 @Injectable()
@@ -54,8 +54,8 @@ export class ProductService extends BaseServiceAbstract<Product> {
             throw new BadRequestException(`Product type \`${type}\` not found.`)
         }
 
-        const shopIdObj = createObjectId(shopId)
-        const productIdObj = createObjectId(productId)
+        const shopIdObj = convertToObjectId(shopId)
+        const productIdObj = convertToObjectId(productId)
 
         return await productClass.updateProduct(shopIdObj, productIdObj, payload)
     }

@@ -4,7 +4,7 @@ import { HeaderApiEnum } from '@common/enums/common.enum';
 
 export const createSwaggerConfig = () => {
     return new DocumentBuilder()
-        .setTitle('Backend Ecommerce Api')
+        .setTitle('Backend Ecommerce API')
         .setDescription('Learning from a Tips JavaScript channel. Built with NestJS.')
         .addApiKey({ type: 'apiKey', name: HeaderApiEnum.API_KEY, in: 'header' }, 'Api-Key')
         .addApiKey({ type: 'apiKey', name: HeaderApiEnum.CLIENT_ID, in: 'header' }, 'Client-Id')

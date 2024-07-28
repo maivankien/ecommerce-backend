@@ -45,7 +45,7 @@ export const updateNestedObjectParser = (obj: AnyObject): AnyObject => {
     return final
 }
 
-export const createObjectId = (id: string) => {
+export const convertToObjectId = (id: string) => {
     if (!isValidObjectId(id)) {
         throw new BadRequestException('Invalid ObjectId.')
     }
