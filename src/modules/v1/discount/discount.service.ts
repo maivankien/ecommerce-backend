@@ -1,5 +1,5 @@
 import { Discount } from "./entities/discount.entity";
-import { convertToObjectId } from "@common/utils/common.util";
+import { convertToObjectId, removeAttrUndefined } from "@common/utils/common.util";
 import { DiscountAppliesToEnum } from "@common/enums/product.enum";
 import { ProductService } from "../product/services/product.service";
 import { DiscountRepositoryInterface } from "./interfaces/discount.interface";
@@ -106,10 +106,7 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             throw new BadRequestException('Discount code not found')
         }
 
-        return await this.discountRepository.findOneAndUpdate({
-            discount_code: code,
-            discount_shop_id: convertToObjectId(shop_id)
-        }, {
+        const updateDate = removeAttrUndefined({
             discount_name: name,
             discount_type: type,
             discount_code: code,
@@ -127,7 +124,12 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             discount_min_order_value: min_order_value || 0,
             discount_max_uses_per_user: max_uses_per_user,
             discount_product_ids: applies_to === DiscountAppliesToEnum.ALL ? [] : product_ids
-        } as Discount)
+        }) as Discount
+
+        return await this.discountRepository.findOneAndUpdate({
+            discount_code: code,
+            discount_shop_id: convertToObjectId(shop_id)
+        }, updateDate)
     }
 
     async getAllDiscountCodeWithProduct({
