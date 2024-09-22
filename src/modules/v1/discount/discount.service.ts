@@ -1,6 +1,6 @@
 import { Discount } from "./entities/discount.entity";
 import { convertToObjectId, removeAttrUndefined } from "@common/utils/common.util";
-import { DiscountAppliesToEnum } from "@common/enums/product.enum";
+import { DiscountAppliesToEnum, DiscountTypeEnum } from "@common/enums/product.enum";
 import { ProductService } from "../product/services/product.service";
 import { DiscountRepositoryInterface } from "./interfaces/discount.interface";
 import { BaseServiceAbstract } from "@common/mongo/base/services/base.abstract.service";
@@ -24,7 +24,7 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
         const {
             code, start_date, end_date, is_active, shop_id, min_order_value,
             product_ids, applies_to, name, description, type, users_used,
-            value, max_value, max_users, users_count, max_uses_per_user
+            value, max_value, max_users, users_count, max_uses_per_user, max_order_value
         } = payload
 
         const timeNow = new Date()
@@ -43,10 +43,8 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             discount_code: code,
             discount_shop_id: convertToObjectId(shop_id)
         }, {
-            projection: {
-                _id: 1,
-                discount_is_active: 1
-            }
+            _id: 1,
+            discount_is_active: 1
         })
 
         if (foundDiscount?.discount_is_active) {
@@ -58,7 +56,6 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             discount_type: type,
             discount_code: code,
             discount_value: value,
-            discount_shop_id: shop_id,
             discount_max_uses: max_users,
             discount_is_active: is_active,
             discount_max_value: max_value,
@@ -68,7 +65,9 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             discount_uses_count: users_count,
             discount_end_date: discountEndDate,
             discount_start_date: discountStartDate,
+            discount_shop_id: convertToObjectId(shop_id),
             discount_min_order_value: min_order_value || 0,
+            discount_max_order_value: max_order_value || 0,
             discount_max_uses_per_user: max_uses_per_user,
             discount_product_ids: applies_to === DiscountAppliesToEnum.ALL ? [] : product_ids
         } as Discount)
@@ -77,8 +76,8 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
     async updateDiscountCode(payload): Promise<Discount> {
         const {
             code, start_date, end_date, is_active, shop_id, min_order_value,
-            product_ids, applies_to, name, description, type, users_used,
-            value, max_value, max_users, users_count, max_uses_per_user
+            product_ids, applies_to, name, description, type, users_used, discount_id,
+            value, max_value, max_users, users_count, max_uses_per_user, max_order_value
         } = payload
 
         const timeNow = new Date()
@@ -95,6 +94,7 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
 
         const foundDiscount = await this.discountRepository.findOneByCondition({
             discount_code: code,
+            _id: convertToObjectId(discount_id),
             discount_shop_id: convertToObjectId(shop_id)
         }, {
             projection: {
@@ -121,7 +121,8 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             discount_uses_count: users_count,
             discount_end_date: discountEndDate,
             discount_start_date: discountStartDate,
-            discount_min_order_value: min_order_value || 0,
+            discount_min_order_value: min_order_value,
+            discount_max_order_value: max_order_value,
             discount_max_uses_per_user: max_uses_per_user,
             discount_product_ids: applies_to === DiscountAppliesToEnum.ALL ? [] : product_ids
         }) as Discount
@@ -142,14 +143,11 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
             discount_code: code,
             discount_shop_id: convertToObjectId(shopId)
         }, {
-            projection: {
-                _id: 1,
-                discount_is_active: 1,
-                discount_applies_to: 1,
-                discount_product_ids: 1
-            }
+            _id: 1,
+            discount_is_active: 1,
+            discount_applies_to: 1,
+            discount_product_ids: 1
         })
-
         if (!foundDiscount?.discount_is_active) {
             throw new NotFoundException('Discount code not found')
         }
@@ -196,5 +194,133 @@ export class DiscountService extends BaseServiceAbstract<Discount> {
         })
 
         return discounts
+    }
+
+    async getDiscountAmount({
+        codeId,
+        userId,
+        shopId,
+        products
+    }) {
+        const foundDiscount = await this.discountRepository.findOneByCondition({
+            discount_code: codeId,
+            discount_shop_id: convertToObjectId(shopId),
+        }, {
+            _id: 1,
+            discount_code: 1,
+            discount_value: 1,
+            discount_type: 1,
+            discount_max_uses: 1,
+            discount_end_date: 1,
+            discount_max_value: 1,
+            discount_is_active: 1,
+            discount_uses_count: 1,
+            discount_start_date: 1,
+            discount_users_used: 1,
+            discount_applies_to: 1,
+            discount_product_ids: 1,
+            discount_max_order_value: 1,
+            discount_min_order_value: 1,
+            discount_max_uses_per_user: 1,
+        })
+
+        if (!foundDiscount) {
+            throw new NotFoundException('Discount code not found')
+        }
+
+        const {
+            discount_value,
+            discount_type,
+            discount_is_active,
+            discount_max_uses,
+            discount_start_date,
+            discount_end_date,
+            discount_users_used,
+            discount_min_order_value,
+            discount_max_order_value,
+        } = foundDiscount
+
+        if (!discount_is_active) {
+            throw new BadRequestException('Discount code is inactive')
+        }
+
+        if (discount_max_uses <= 0) {
+            throw new BadRequestException('Discount code has reached max uses')
+        }
+
+        const dateNow = new Date()
+        if (dateNow < new Date(discount_start_date) || dateNow > new Date(discount_end_date)) {
+            throw new BadRequestException('Discount code is not yet active')
+        }
+
+        // Check if discount applies to all prices
+        const totalOrder = products.reduce((acc: number, product: Product) => {
+            return acc + (product.product_price * product.product_quantity)
+        }, 0)
+
+        if (discount_min_order_value > 0 && totalOrder < discount_min_order_value) {
+            throw new BadRequestException('Discount requires minimum order value of ' + discount_min_order_value)
+        }
+
+        if (discount_max_order_value > 0) {
+            const userDiscount = discount_users_used.find((user) => user === userId)
+
+            // Check if user has used discount code (Logic for max uses per user)
+            if (userDiscount) {
+                throw new BadRequestException('Discount code has already been used by user')
+            }
+        }
+
+        const amount = discount_type === DiscountTypeEnum.FIXED_AMOUNT ? discount_value : (totalOrder * (discount_value / 100))
+
+        return {
+            totalOrder,
+            discount: amount,
+            totalPrice: totalOrder - amount
+        }
+    }
+
+    async deleteDiscountCode(shopId: string, discountId: string) {
+        const deleteDiscount = await this.discountRepository.findOneAndUpdate(
+            { _id: convertToObjectId(discountId), discount_shop_id: convertToObjectId(shopId) },
+            { deleted_at: new Date() },
+            { new: true, projection: { deleted_at: 1 } }
+        )
+
+        if (!deleteDiscount) {
+            throw new NotFoundException('Discount code not found')
+        }
+
+        return !!(deleteDiscount.deleted_at)
+    }
+
+
+    async cancelDiscountCode(shopId: string, codeId: string, userId: string) {
+        const foundDiscount = await this.discountRepository.findOneByCondition({
+            discount_code: convertToObjectId(codeId),
+            discount_shop_id: convertToObjectId(shopId),
+        }, {
+            projection: {
+                _id: 1,
+            }
+        })
+
+        if (!foundDiscount) {
+            throw new NotFoundException('Discount code not found')
+        }
+
+        const discountId = foundDiscount._id.toString()
+
+        const result = await this.discountRepository.update(discountId, {
+            $pull: {
+                discount_users_used: userId
+            },
+            $inc: {
+                discount_max_uses: 1,
+                discount_users_count: -1
+            }
+        })
+
+        return result
     }
 }

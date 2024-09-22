@@ -52,6 +52,9 @@ export class Discount extends BaseMongoDBEntity {
     @Prop({ type: Number, required: true, default: 0 })
     discount_min_order_value: number
 
+    @Prop({ type: Number, required: true, default: 0 })
+    discount_max_order_value: number
+
     @Prop({ type: Types.ObjectId, required: true, ref: Shop.name })
     discount_shop_id: Types.ObjectId
 

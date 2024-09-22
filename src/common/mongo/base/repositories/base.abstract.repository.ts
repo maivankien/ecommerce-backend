@@ -64,7 +64,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         return await query.exec()
     }
 
-    async update(id: string, dto: Partial<T>): Promise<T> {
+    async update(id: string, dto: UpdateQuery<T>): Promise<T> {
         return await this.model.findOneAndUpdate(
             { _id: id, deleted_at: null },
             dto,

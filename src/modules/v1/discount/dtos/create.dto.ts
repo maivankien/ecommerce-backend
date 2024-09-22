@@ -1,6 +1,7 @@
+import { DiscountAppliesToEnum } from "@common/enums/product.enum";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsArray, IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateDiscountDto {
     @ApiProperty()
@@ -46,15 +47,23 @@ export class CreateDiscountDto {
 
     @ApiProperty()
     @Expose()
+    @IsNumber()
+    max_order_value: number;
+
+    @ApiProperty()
+    @Expose()
     @IsArray()
     @IsNotEmpty()
     product_ids: string[];
 
-    @ApiProperty()
+    @ApiProperty({
+        default: DiscountAppliesToEnum.ALL
+    })
     @Expose()
     @IsString()
     @IsNotEmpty()
-    applies_to: string;
+    @IsEnum(DiscountAppliesToEnum)
+    applies_to: DiscountAppliesToEnum;
 
     @ApiProperty()
     @Expose()
@@ -62,7 +71,9 @@ export class CreateDiscountDto {
     @IsNotEmpty()
     type: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        default: []
+    })
     @Expose()
     @IsNotEmpty()
     users_used: string[];

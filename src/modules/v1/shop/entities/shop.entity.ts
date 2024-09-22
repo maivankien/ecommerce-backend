@@ -1,4 +1,4 @@
-import { HydratedDocument, ObjectId } from "mongoose";
+import { HydratedDocument } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { BaseMongoDBEntity } from "@common/mongo/base/base.mongo.entity";
 import { StatusShopEnum } from "@common/enums/common.enum";

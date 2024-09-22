@@ -30,7 +30,7 @@ export interface BaseRepositoryInterface<T> {
         populate?: PopulateOptions | PopulateOptions[]
     ): Promise<T[]>
 
-    update(id: string, dto: Partial<T>): Promise<T>
+    update(id: string, dto: UpdateQuery<T>): Promise<T>
 
     softDelete(id: string): Promise<boolean>
 
