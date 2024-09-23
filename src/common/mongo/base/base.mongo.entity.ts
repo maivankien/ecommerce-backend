@@ -1,4 +1,4 @@
-import { ObjectId, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { Prop } from '@nestjs/mongoose';
 import { Expose, Transform } from 'class-transformer';
 

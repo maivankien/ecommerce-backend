@@ -12,6 +12,7 @@ import { CombinedMiddleware } from '@common/middlewares/common/combined.middlewa
 import { ApiKeyMiddleware } from '@common/middlewares/auth/api-key.middleware';
 import { ProductModule } from '@modules/v1/product/product.module';
 import { DiscountModulle } from '@modules/v1/discount/discount.module';
+import { CartModule } from '@modules/v1/cart/cart.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { DiscountModulle } from '@modules/v1/discount/discount.module';
         AuthModule,
         ProductModule,
         DiscountModulle,
+        CartModule,
         RouterModule.register([
             {
                 path: 'shop',
@@ -34,6 +36,10 @@ import { DiscountModulle } from '@modules/v1/discount/discount.module';
             {
                 path: 'discount',
                 module: DiscountModulle
+            },
+            {
+                path: 'cart',
+                module: CartModule
             }
         ])
     ],
