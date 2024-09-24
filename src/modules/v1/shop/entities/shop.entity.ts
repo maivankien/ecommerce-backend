@@ -7,7 +7,10 @@ import { StatusShopEnum } from "@common/enums/common.enum";
 export type ShopDocument = HydratedDocument<Shop>
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'shops'
 })
 export class Shop extends BaseMongoDBEntity {

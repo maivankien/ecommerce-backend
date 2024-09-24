@@ -7,7 +7,10 @@ import { Shop } from "@modules/v1/shop/entities/shop.entity"
 export type ClothingDocument = HydratedDocument<Clothing>
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'clothers'
 })
 export class Clothing extends BaseMongoDBEntity {

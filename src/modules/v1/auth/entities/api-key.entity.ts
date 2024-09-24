@@ -8,7 +8,10 @@ export type ApiKeyDocument = HydratedDocument<ApiKey>
 
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'api_keys'
 })
 export class ApiKey extends BaseMongoDBEntity {

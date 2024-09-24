@@ -24,7 +24,7 @@ export class ProductController {
     @Get('')
     async getAllProducts(@Query() { limit = DEFAULT_LIMIT, page = DEFAULT_PAGE }: PaginationDto, @Res() res: Response) {
         const skip = (page - 1) * limit
-        const products = await this.productService.findAllProducts({}, ['product_name', 'product_price', 'product_thumb'], 'ctime', limit, skip)
+        const products = await this.productService.findAllProducts({}, ['product_name', 'product_price', 'product_thumb', 'product_shop'], 'ctime', limit, skip)
 
         return SuccessResponse(res, "Success", products)
     }

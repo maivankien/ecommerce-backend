@@ -8,7 +8,10 @@ import { Shop } from "@modules/v1/shop/entities/shop.entity";
 export type InventoryDocument = HydratedDocument<Inventory>
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'inventories'
 })
 export class Inventory extends BaseMongoDBEntity {

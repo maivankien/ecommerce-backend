@@ -12,20 +12,23 @@ export class CartProduct {
     product_id: string
 
     @Prop({ type: String, required: true })
-    product_shop_id: string
+    product_shop_id?: string
 
     @Prop({ type: Number, required: true })
     product_quantity: number
 
     @Prop({ type: String, required: true })
-    product_name: string
+    product_name?: string
 
     @Prop({ type: Number, required: true })
-    product_price: number
+    product_price?: number
 }
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'carts'
 })
 export class Cart extends BaseMongoDBEntity {

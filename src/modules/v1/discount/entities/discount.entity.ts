@@ -7,7 +7,10 @@ import { DiscountAppliesToEnum, DiscountTypeEnum } from "@common/enums/product.e
 export type DiscountDocument = HydratedDocument<Discount>
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'discounts'
 })
 export class Discount extends BaseMongoDBEntity {

@@ -9,7 +9,10 @@ import { ProductType } from "../interface/product-type.interface";
 export type ProductDocument = HydratedDocument<Product>
 
 @Schema({
-    timestamps: true,
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
     collection: 'products'
 })
 export class Product extends BaseMongoDBEntity {
