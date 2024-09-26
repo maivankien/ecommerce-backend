@@ -1,10 +1,11 @@
+import { AuthModule } from "../auth/auth.module";
 import { MiddlewareConsumer, Module } from "@nestjs/common";
-import { CartController } from "./cart.controller";
-import { CartService } from "./cart.service";
-import { MongooseModule } from "@nestjs/mongoose";
-import { Cart, CartSchema } from "./entities/cart.entity";
-import { CartRepository } from "./repositories/cart.repository";
+import { OrderController } from "./order.controller";
+import { OrderService } from "./order.service";
+import { CartModule } from "../cart/cart.module";
 import { ProductModule } from "../product/product.module";
+import { DiscountModule } from "../discount/discount.module";
+import { MongooseModule } from "@nestjs/mongoose";
 import { AuthenticationMiddleware } from "@common/middlewares/auth/authentication.middleware";
 import { KeyTokenService } from "../auth/services/keytoken.service";
 import { KeyTokenRepository } from "../auth/repositories/keytoken.repository";
@@ -13,31 +14,26 @@ import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
 
 @Module({
     imports: [
+        AuthModule,
+        CartModule,
         ProductModule,
+        DiscountModule,
         MongooseModule.forFeature([
-            { name: Cart.name, schema: CartSchema },
             { name: KeyToken.name, schema: KeyTokenSchema },
         ])
     ],
-    controllers: [CartController],
+    controllers: [OrderController],
     providers: [
-        CartService,
-        {
-            provide: 'CartRepositoryInterface',
-            useClass: CartRepository
-        },
+        OrderService,
         KeyTokenService,
         {
             provide: 'KeyTokenRepositoryInterface',
             useClass: KeyTokenRepository
         },
     ],
-    exports: [
-        CartService
-    ]
 })
-export class CartModule {
+export class OrderModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthenticationMiddleware).forRoutes(CartController)
+        consumer.apply(AuthenticationMiddleware).forRoutes(OrderController)
     }
 }

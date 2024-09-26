@@ -38,8 +38,11 @@ import { AuthenticationMiddleware } from "@common/middlewares/auth/authenticatio
             useClass: KeyTokenRepository
         },
     ],
+    exports: [
+        DiscountService
+    ]
 })
-export class DiscountModulle {
+export class DiscountModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthenticationMiddleware).forRoutes(
             { path: 'v1/discount', method: RequestMethod.POST },
