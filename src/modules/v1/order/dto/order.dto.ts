@@ -78,3 +78,58 @@ export class CheckoutReviewDto {
     @ValidateNested({ each: true })
     shop_order_ids: ShopOrderIdsDto[]
 }
+
+
+class CheckOutOrderAddress {
+    @ApiProperty()
+    @IsString()
+    street: string
+
+    @ApiProperty()
+    @IsString()
+    city: string
+
+    @ApiProperty()
+    @IsString()
+    state: string
+
+    @ApiProperty()
+    @IsString()
+    country: string
+}
+
+
+class CheckOutOrderPayment {
+    @ApiProperty()
+    @IsString()
+    payment_method: string
+
+    @ApiProperty()
+    @IsString()
+    payment_status: string
+}
+
+export class CheckoutOrderSto {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    cart_id: string
+
+    @ApiProperty({
+        type: [ShopOrderIdsDto]
+    })
+    @IsNotEmpty()
+    @ArrayNotEmpty()
+    @Type(() => ShopOrderIdsDto)
+    @ValidateNested({ each: true })
+    shop_order_ids: ShopOrderIdsDto[]
+
+
+    @ApiProperty()
+    @Type(() => CheckOutOrderAddress)
+    user_address: CheckOutOrderAddress
+
+    @ApiProperty()
+    @Type(() => CheckOutOrderPayment)
+    user_payment: CheckOutOrderPayment
+}

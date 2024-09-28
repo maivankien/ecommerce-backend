@@ -12,7 +12,7 @@ export abstract class BaseServiceAbstract<T extends BaseMongoDBEntity>
         return await this.repository.create(input)
     }
 
-    async findOneAndUpdate(filter: FilterQuery<T>, update: Partial<T>, options?: QueryOptions<T>): Promise<T> {
+    async findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T> {
         return await this.repository.findOneAndUpdate(filter, update, options)
     }
 
@@ -38,6 +38,10 @@ export abstract class BaseServiceAbstract<T extends BaseMongoDBEntity>
 
     async update(id: string, input: UpdateQuery<T>): Promise<T> {
         return await this.repository.update(id, input)
+    }
+
+    async updateOne(filter: FilterQuery<T>, input: UpdateQuery<T>) {
+        return await this.repository.updateOne(filter, input)
     }
 
     async remove(id: string): Promise<boolean> {

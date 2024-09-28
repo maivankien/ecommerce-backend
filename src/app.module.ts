@@ -14,12 +14,14 @@ import { ProductModule } from '@modules/v1/product/product.module';
 import { DiscountModule } from '@modules/v1/discount/discount.module';
 import { CartModule } from '@modules/v1/cart/cart.module';
 import { OrderModule } from '@modules/v1/order/order.module';
+import { RedisProviderModule } from './providers/cache/redis/provider.module';
 
 
 @Module({
     imports: [
         AppConfigModule,
         MongoDBProviderModule,
+        RedisProviderModule,
         ShopModule,
         AuthModule,
         ProductModule,

@@ -72,6 +72,10 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         ).exec()
     }
 
+    async updateOne(filter: FilterQuery<T>, input: UpdateQuery<T>) {
+        return await this.model.updateOne(filter, input)
+    }
+
     async softDelete(id: string): Promise<boolean> {
         const delete_item = await this.model.findById(id)
         if (!delete_item) {

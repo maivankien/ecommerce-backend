@@ -15,31 +15,30 @@ import {
     FurnituresRepository
 }
     from "./repositories/product-type.repository";
+import { AuthModule } from "../auth/auth.module";
 import { InventoryService } from "./services/inventory.service";
-import { KeyTokenService } from "../auth/services/keytoken.service";
 import { Inventory, InventorySchema } from "./entities/inventory.entity";
 import { InventoryRepository } from "./repositories/inventory.repository";
 import { ProductServiceFactory } from "@common/factories/product/product.factory";
-import { KeyTokenRepository } from "../auth/repositories/keytoken.repository";
-import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
 import { ClothingServiceFactory } from "@common/factories/product/clothing.factory";
 import { ElectronicsServiceFactory } from "@common/factories/product/electronic.factory";
 import { FurnituresServiceFactory } from "@common/factories/product/furiture.factory";
 import { AuthenticationMiddleware } from "@common/middlewares/auth/authentication.middleware";
+import { InventoryController } from "./controllers/inventory.controller";
 
 
 @Module({
     imports: [
+        AuthModule,
         MongooseModule.forFeature([
             { name: Product.name, schema: ProductSchema },
             { name: Clothing.name, schema: ClothingSchema },
-            { name: KeyToken.name, schema: KeyTokenSchema },
             { name: Electronics.name, schema: ElectronicsSchema },
             { name: Furnitures.name, schema: FurnituresSchema },
             { name: Inventory.name, schema: InventorySchema }
         ])
     ],
-    controllers: [ProductController],
+    controllers: [ProductController, InventoryController],
     providers: [
         ProductService,
         ProductServiceFactory,
@@ -62,18 +61,13 @@ import { AuthenticationMiddleware } from "@common/middlewares/auth/authenticatio
             provide: 'FurnituresRepositoryInterface',
             useClass: FurnituresRepository
         },
-        KeyTokenService,
-        {
-            provide: 'KeyTokenRepositoryInterface',
-            useClass: KeyTokenRepository
-        },
         InventoryService,
         {
             provide: 'InventoryRepositoryInterface',
             useClass: InventoryRepository
         }
     ],
-    exports: [ProductService]
+    exports: [ProductService, InventoryService]
 })
 export class ProductModule {
     configure(consumer: MiddlewareConsumer) {
@@ -84,6 +78,7 @@ export class ProductModule {
             { path: 'v1/product/publish', method: RequestMethod.GET },
             { path: 'v1/product/publish/:id', method: RequestMethod.PUT },
             { path: 'v1/product/unpublish/:id', method: RequestMethod.PUT },
+            { path: 'v1/product/inventory/add-stock', method: RequestMethod.POST },
         )
     }
 

@@ -6,10 +6,10 @@ import { CartModule } from "../cart/cart.module";
 import { ProductModule } from "../product/product.module";
 import { DiscountModule } from "../discount/discount.module";
 import { MongooseModule } from "@nestjs/mongoose";
+import { RedisOrderService } from "./services/redis.service";
 import { AuthenticationMiddleware } from "@common/middlewares/auth/authentication.middleware";
-import { KeyTokenService } from "../auth/services/keytoken.service";
-import { KeyTokenRepository } from "../auth/repositories/keytoken.repository";
-import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
+import { Order, OrderSchema } from "./entities/order.entity";
+import { OrderRepository } from "./repositories/order.repository";
 
 
 @Module({
@@ -19,17 +19,17 @@ import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
         ProductModule,
         DiscountModule,
         MongooseModule.forFeature([
-            { name: KeyToken.name, schema: KeyTokenSchema },
+            { name: Order.name, schema: OrderSchema}
         ])
     ],
     controllers: [OrderController],
     providers: [
         OrderService,
-        KeyTokenService,
         {
-            provide: 'KeyTokenRepositoryInterface',
-            useClass: KeyTokenRepository
+            provide: 'OrderRepositoryInterface',
+            useClass: OrderRepository
         },
+        RedisOrderService,
     ],
 })
 export class OrderModule {

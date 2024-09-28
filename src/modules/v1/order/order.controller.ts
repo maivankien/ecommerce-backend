@@ -5,7 +5,7 @@ import { Body, Controller, Post, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { RequestData } from "@common/decorators/requests/request-data.decorator";
 import { PayloadJwt } from "@common/interfaces/common.interface";
-import { CheckoutReviewDto } from "./dto/order.dto";
+import { CheckoutOrderSto, CheckoutReviewDto } from "./dto/order.dto";
 import { SuccessResponse } from "@common/core/success.response";
 
 
@@ -16,10 +16,17 @@ export class OrderController {
         private readonly orderService: OrderService
     ) {}
 
-    @Post()
+    @Post('review')
     async checkoutReview(@RequestData('user') user: PayloadJwt, @Body() payload: CheckoutReviewDto, @Res() res: Response) {
         const result = await this.orderService.checkoutReview(user.userId, payload)
 
         return SuccessResponse(res, 'Checkout review successfully!', result)
+    }
+
+    @Post('checkout')
+    async checkout(@RequestData('user') user: PayloadJwt, @Body() payload: CheckoutOrderSto, @Res() res: Response) {
+        const result = await this.orderService.orderByUser(user.userId, payload)
+
+        return SuccessResponse(res, 'Checkout successfully!', result)
     }
 }

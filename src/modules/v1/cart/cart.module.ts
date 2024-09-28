@@ -5,18 +5,16 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Cart, CartSchema } from "./entities/cart.entity";
 import { CartRepository } from "./repositories/cart.repository";
 import { ProductModule } from "../product/product.module";
+import { AuthModule } from "../auth/auth.module";
 import { AuthenticationMiddleware } from "@common/middlewares/auth/authentication.middleware";
-import { KeyTokenService } from "../auth/services/keytoken.service";
-import { KeyTokenRepository } from "../auth/repositories/keytoken.repository";
-import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
 
 
 @Module({
     imports: [
+        AuthModule,
         ProductModule,
         MongooseModule.forFeature([
             { name: Cart.name, schema: CartSchema },
-            { name: KeyToken.name, schema: KeyTokenSchema },
         ])
     ],
     controllers: [CartController],
@@ -25,12 +23,7 @@ import { KeyToken, KeyTokenSchema } from "../auth/entities/keytoken.entity";
         {
             provide: 'CartRepositoryInterface',
             useClass: CartRepository
-        },
-        KeyTokenService,
-        {
-            provide: 'KeyTokenRepositoryInterface',
-            useClass: KeyTokenRepository
-        },
+        }
     ],
     exports: [
         CartService
