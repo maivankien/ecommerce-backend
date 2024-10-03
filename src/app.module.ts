@@ -16,6 +16,7 @@ import { CartModule } from '@modules/v1/cart/cart.module';
 import { OrderModule } from '@modules/v1/order/order.module';
 import { RedisProviderModule } from './providers/cache/redis/provider.module';
 import { LoggerDiscordService } from '@common/loggers/discord.log';
+import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.middleware';
 
 
 @Module({
@@ -57,6 +58,7 @@ import { LoggerDiscordService } from '@common/loggers/discord.log';
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggerDiscordMiddleware).forRoutes('*')
         consumer.apply(CombinedMiddleware).forRoutes('*')
         consumer.apply(ApiKeyMiddleware).forRoutes('*')
         consumer.apply(permissionMiddleware(PermissionApiKeyEnum.BASIC)).forRoutes('*')
