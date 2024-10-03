@@ -3,9 +3,10 @@ import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AppConfigService {
-    constructor(private configService: ConfigService) {
-    }
-    
+    constructor(
+        private readonly configService: ConfigService
+    ) { }
+
     get name(): string {
         return this.configService.get<string>('app.name');
     }

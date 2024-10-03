@@ -15,6 +15,7 @@ import { DiscountModule } from '@modules/v1/discount/discount.module';
 import { CartModule } from '@modules/v1/cart/cart.module';
 import { OrderModule } from '@modules/v1/order/order.module';
 import { RedisProviderModule } from './providers/cache/redis/provider.module';
+import { LoggerDiscordService } from '@common/loggers/discord.log';
 
 
 @Module({
@@ -52,7 +53,7 @@ import { RedisProviderModule } from './providers/cache/redis/provider.module';
         ])
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, LoggerDiscordService],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
