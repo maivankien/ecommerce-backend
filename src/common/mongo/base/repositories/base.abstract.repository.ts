@@ -27,6 +27,19 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         return item?.deleted_at ? null : item
     }
 
+    async findOne(
+        condition: FilterQuery<T>,
+        projection?: ProjectionType<T>,
+        options?: QueryOptions<T>,
+        populate?: PopulateOptions | PopulateOptions[]
+    ): Promise<T> {
+        const query = this.model.findOne({ ...condition, deleted_at: null }, projection, options)
+        if (populate) {
+            query.populate(populate)
+        }
+        return await query.exec()
+    }
+
     async findOneByCondition(
         condition = {},
         projection?: string,
@@ -62,6 +75,10 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
             query.populate(populate)
         }
         return await query.exec()
+    }
+
+    async updateMany(filter: FilterQuery<T>, dto: UpdateQuery<T>) {
+        return await this.model.updateMany(filter, dto)
     }
 
     async update(id: string, dto: UpdateQuery<T>): Promise<T> {

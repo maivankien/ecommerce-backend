@@ -17,6 +17,7 @@ import { OrderModule } from '@modules/v1/order/order.module';
 import { RedisProviderModule } from './providers/cache/redis/provider.module';
 import { LoggerDiscordService } from '@common/loggers/discord.log';
 import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.middleware';
+import { CommentsModule } from '@modules/v1/comment/comment.module';
 
 
 @Module({
@@ -30,6 +31,7 @@ import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.
         DiscountModule,
         CartModule,
         OrderModule,
+        CommentsModule,
         RouterModule.register([
             {
                 path: 'shop',
@@ -50,6 +52,10 @@ import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.
             {
                 path: 'order',
                 module: OrderModule
+            },
+            {
+                path: 'comment',
+                module: CommentsModule
             }
         ])
     ],

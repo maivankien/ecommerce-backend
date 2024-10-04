@@ -11,6 +11,13 @@ export interface BaseRepositoryInterface<T> {
 
     findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T>
 
+    findOne(
+        condition: FilterQuery<T>,
+        projection?: ProjectionType<T>,
+        options?: QueryOptions<T>,
+        populate?: PopulateOptions | PopulateOptions[]
+    ): Promise<T>
+
     findOneByCondition(
         condition?: FilterQuery<T>,
         projection?: ProjectionType<T>,
@@ -31,6 +38,8 @@ export interface BaseRepositoryInterface<T> {
     ): Promise<T[]>
 
     update(id: string, dto: UpdateQuery<T>): Promise<T>
+
+    updateMany(filter: FilterQuery<T>, dto: UpdateQuery<T>)
 
     updateOne(filter: FilterQuery<T>, dto: UpdateQuery<T>)
 
