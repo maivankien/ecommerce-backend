@@ -16,7 +16,7 @@ export class ProductService extends BaseServiceAbstract<Product> {
         super(productRepository)
     }
 
-    private productRegistry = new Map<string, ProductTypeFactory>()
+    private readonly productRegistry = new Map<string, ProductTypeFactory>()
 
     registerProductType(type: string, service: ProductTypeFactory) {
         this.productRegistry.set(type, service)
@@ -137,6 +137,14 @@ export class ProductService extends BaseServiceAbstract<Product> {
         return await this.productRepository.findOneByCondition({
             _id: new Types.ObjectId(product_id)
         }, unGetSelectData(unSelect))
+    }
+
+    async validateProductExists(product_id: string) {
+        const product = await this.productRepository.findOneById(product_id, { _id: 1 })
+
+        if (!product) {
+            throw new BadRequestException("Product not found.")
+        }
     }
 }
 

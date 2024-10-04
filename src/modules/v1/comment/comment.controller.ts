@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Body, Controller, Get, Param, Post, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, Res } from "@nestjs/common";
 import { CommentsService } from "./comment.service";
 import { ApiVersionEnum } from "@common/enums/common.enum";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
@@ -43,5 +43,19 @@ export class CommentsController {
         const result = await this.commentsService.getCommentsByParentId(productId, parentId, pagination)
 
         return SuccessResponse(res, 'Comments fetched successfully', result)
+    }
+
+
+    @Delete(":productId/:commentId")
+    async deleteComment(
+        @Res() res: Response, 
+        @RequestData('user') user: PayloadJwt,
+        @Param('commentId') commentId: string, 
+        @Param('productId') productId: string
+    ) {
+        const { userId } = user
+        await this.commentsService.deleteComments(productId, commentId, userId)
+
+        return SuccessResponse(res, 'Comment deleted successfully')
     }
 }

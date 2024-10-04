@@ -6,10 +6,12 @@ import { Comments, CommentsSchema } from "./entities/comment.entity";
 import { CommentsRepository } from "./repositories/comment.repository";
 import { AuthenticationMiddleware } from "@common/middlewares/auth/authentication.middleware";
 import { AuthModule } from "../auth/auth.module";
+import { ProductModule } from "../product/product.module";
 
 @Module({
     imports: [
         AuthModule,
+        ProductModule,
         MongooseModule.forFeature([
             { name: Comments.name, schema: CommentsSchema }
         ])

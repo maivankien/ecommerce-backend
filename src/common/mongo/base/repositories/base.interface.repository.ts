@@ -43,6 +43,8 @@ export interface BaseRepositoryInterface<T> {
 
     updateOne(filter: FilterQuery<T>, dto: UpdateQuery<T>)
 
+    deleteMany(filter: FilterQuery<T>): Promise<boolean>
+
     softDelete(id: string): Promise<boolean>
 
     permanentlyDelete(id: string): Promise<boolean>

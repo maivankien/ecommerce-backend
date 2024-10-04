@@ -93,6 +93,10 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         return await this.model.updateOne(filter, input)
     }
 
+    async deleteMany(filter: FilterQuery<T>): Promise<boolean> {
+        return !!(await this.model.deleteMany(filter).exec())
+    }
+
     async softDelete(id: string): Promise<boolean> {
         const delete_item = await this.model.findById(id)
         if (!delete_item) {
