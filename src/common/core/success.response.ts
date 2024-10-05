@@ -13,6 +13,10 @@ export const CreatedResponse = (res: Response, message: string = MESSAGE_CREATED
 }
 
 export const SuccessResponse = (res: Response, message: string = MESSAGE_SUCCESS, data: object = null, options: object = null) => {
+    if (Array.isArray(data) && data.length === 0) {
+        data = null
+    }
+
     return res.status(HttpStatus.OK).json({
         message: message,
         data: data,

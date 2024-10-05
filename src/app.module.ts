@@ -18,6 +18,7 @@ import { RedisProviderModule } from './providers/cache/redis/provider.module';
 import { LoggerDiscordService } from '@common/loggers/discord.log';
 import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.middleware';
 import { CommentsModule } from '@modules/v1/comment/comment.module';
+import { NotificationModule } from '@modules/v1/notification/notification.module';
 
 
 @Module({
@@ -32,6 +33,7 @@ import { CommentsModule } from '@modules/v1/comment/comment.module';
         CartModule,
         OrderModule,
         CommentsModule,
+        NotificationModule,
         RouterModule.register([
             {
                 path: 'shop',
@@ -56,6 +58,10 @@ import { CommentsModule } from '@modules/v1/comment/comment.module';
             {
                 path: 'comment',
                 module: CommentsModule
+            },
+            {
+                path: 'notification',
+                module: NotificationModule
             }
         ])
     ],
