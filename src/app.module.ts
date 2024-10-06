@@ -19,6 +19,8 @@ import { LoggerDiscordService } from '@common/loggers/discord.log';
 import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.middleware';
 import { CommentsModule } from '@modules/v1/comment/comment.module';
 import { NotificationModule } from '@modules/v1/notification/notification.module';
+import { KafkaProviderModule } from './providers/queues/kafka/provider.module';
+import { RabbitMQProviderModule } from './providers/queues/rabbitmq/provider.module';
 
 
 @Module({
@@ -26,6 +28,8 @@ import { NotificationModule } from '@modules/v1/notification/notification.module
         AppConfigModule,
         MongoDBProviderModule,
         RedisProviderModule,
+        KafkaProviderModule,
+        RabbitMQProviderModule,
         ShopModule,
         AuthModule,
         ProductModule,
