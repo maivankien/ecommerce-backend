@@ -1,0 +1,1 @@
+export const RABBITMQ_DURABLE: boolean = true

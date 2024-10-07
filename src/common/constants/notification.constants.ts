@@ -1,0 +1,1 @@
+export const NOTIFICATION_TOPIC_MESSAGE = 'notification-topic-message'
