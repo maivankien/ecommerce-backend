@@ -9,10 +9,10 @@ const runProducer = async () => {
 
         const channel = await connection.createChannel()
 
-        const queueName = 'test-topic'
+        const queueName = 'shop_dev'
 
         await channel.assertQueue(queueName, {
-            durable: false
+            durable: true
         })
 
         await channel.sendToQueue(queueName, Buffer.from(message))

@@ -7,10 +7,10 @@ const runConsumer = async () => {
 
         const channel = await connection.createChannel()
 
-        const queueName = 'test-topic'
+        const queueName = 'shop_dev'
 
         await channel.assertQueue(queueName, {
-            durable: false
+            durable: true
         })
 
         channel.consume(queueName, (message) => {

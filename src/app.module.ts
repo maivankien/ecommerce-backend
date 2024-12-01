@@ -21,6 +21,7 @@ import { CommentsModule } from '@modules/v1/comment/comment.module';
 import { NotificationModule } from '@modules/v1/notification/notification.module';
 import { KafkaProviderModule } from './providers/queues/kafka/provider.module';
 import { RabbitMQProviderModule } from './providers/queues/rabbitmq/provider.module';
+import { QueueModule } from '@modules/v1/queue/queue.module';
 
 
 @Module({
@@ -38,6 +39,7 @@ import { RabbitMQProviderModule } from './providers/queues/rabbitmq/provider.mod
         OrderModule,
         CommentsModule,
         NotificationModule,
+        QueueModule,
         RouterModule.register([
             {
                 path: 'shop',
@@ -66,6 +68,10 @@ import { RabbitMQProviderModule } from './providers/queues/rabbitmq/provider.mod
             {
                 path: 'notification',
                 module: NotificationModule
+            },
+            {
+                path: 'queue',
+                module: QueueModule
             }
         ])
     ],
