@@ -1,16 +1,13 @@
 import * as amqp from 'amqplib';
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { RabbitMQConfigService } from 'src/config/rabbitmq/config.service';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 
 
 @Injectable()
 export class NotificationConsumerService implements OnModuleInit {
     constructor(
-        private readonly configService: RabbitMQConfigService
+        @Inject('RABBITMQ_CHANNEL')
+        private readonly channel: amqp.Channel
     ) { }
-
-    private channel: amqp.Channel
-    private connection: amqp.Connection
 
     // Queue and Exchange names
     private readonly notiQueue = 'notification_queue_process'
@@ -20,24 +17,6 @@ export class NotificationConsumerService implements OnModuleInit {
 
     async onModuleInit() {
         try {
-            // Establish connection
-            this.connection = await amqp.connect(this.configService.urls)
-            this.connection.on('error', (err) => {
-                console.error(`AMQP Connection error: ${err.message}`)
-            })
-            this.connection.on('close', () => {
-                console.warn('AMQP Connection closed')
-            })
-
-            // Create channel
-            this.channel = await this.connection.createChannel()
-            this.channel.on('error', (err) => {
-                console.error(`AMQP Channel error: ${err.message}`)
-            })
-            this.channel.on('close', () => {
-                console.warn('AMQP Channel closed')
-            })
-
             // Setup Dead Letter Exchange and Queues first
             await this.setupDLX()
 
