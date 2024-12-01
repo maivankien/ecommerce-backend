@@ -14,7 +14,7 @@ export class QueueController {
     ) { }
 
 
-    @Post('send-message')
+    @Post('send-noti')
     async sendMessage() {
         const message = "Hello World"
         const notificationExchange = 'notification_exchange'  // Notification exchange direct
@@ -27,5 +27,17 @@ export class QueueController {
                 expiration: "10000"
             }
         )
+    }
+
+    @Post('send-ordered')
+    async sendOrdered() {
+        const orderedQueue = 'ordered_queue'
+
+        for (let i = 0; i < 10; i++) {
+            const message = `Ordered ${i}`
+            console.log(`Sending ordered: ${message}`)
+
+            this.amqpConnection.channel.sendToQueue(orderedQueue, Buffer.from(message))
+        }
     }
 }
