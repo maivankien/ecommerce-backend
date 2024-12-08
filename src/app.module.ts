@@ -23,6 +23,7 @@ import { KafkaProviderModule } from './providers/queues/kafka/provider.module';
 import { RabbitMQProviderModule } from './providers/queues/rabbitmq/provider.module';
 import { QueueModule } from '@modules/v1/queue/queue.module';
 import { UploadModule } from '@modules/v1/uploads/upload.module';
+import { RBACModule } from '@modules/v1/rbac/rbac.module';
 
 
 @Module({
@@ -42,7 +43,12 @@ import { UploadModule } from '@modules/v1/uploads/upload.module';
         NotificationModule,
         QueueModule,
         UploadModule,
+        RBACModule,
         RouterModule.register([
+            {
+                path: 'rbac',
+                module: RBACModule
+            },
             {
                 path: 'shop',
                 module: ShopModule
