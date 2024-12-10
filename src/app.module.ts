@@ -1,5 +1,5 @@
 import { AppService } from './app.service';
-import { RouterModule } from '@nestjs/core';
+import { APP_FILTER, RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { ShopModule } from '@modules/v1/shop/shop.module';
 import { AppConfigModule } from '@config/app/config.module';
@@ -15,8 +15,6 @@ import { DiscountModule } from '@modules/v1/discount/discount.module';
 import { CartModule } from '@modules/v1/cart/cart.module';
 import { OrderModule } from '@modules/v1/order/order.module';
 import { RedisProviderModule } from './providers/cache/redis/provider.module';
-import { LoggerDiscordService } from '@common/loggers/discord.log';
-import { LoggerDiscordMiddleware } from '@common/middlewares/logger/discord-log.middleware';
 import { CommentsModule } from '@modules/v1/comment/comment.module';
 import { NotificationModule } from '@modules/v1/notification/notification.module';
 import { KafkaProviderModule } from './providers/queues/kafka/provider.module';
@@ -24,6 +22,9 @@ import { RabbitMQProviderModule } from './providers/queues/rabbitmq/provider.mod
 import { QueueModule } from '@modules/v1/queue/queue.module';
 import { UploadModule } from '@modules/v1/uploads/upload.module';
 import { RBACModule } from '@modules/v1/rbac/rbac.module';
+import { MyLogger } from '@common/loggers/logger.log';
+import { AllExceptionsFilter } from '@common/exceptions/exception.filter';
+import { LoggerMiddleware } from '@common/middlewares/logger/logger.middleware';
 
 
 @Module({
@@ -88,11 +89,19 @@ import { RBACModule } from '@modules/v1/rbac/rbac.module';
         ])
     ],
     controllers: [AppController],
-    providers: [AppService, LoggerDiscordService],
+    providers: [
+        AppService, 
+        // LoggerDiscordService,
+        MyLogger,
+        {
+            provide: APP_FILTER,
+            useClass: AllExceptionsFilter,
+        }
+    ],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoggerDiscordMiddleware).forRoutes('*')
+        consumer.apply(LoggerMiddleware).forRoutes('*')
         consumer.apply(CombinedMiddleware).forRoutes('*')
         consumer.apply(ApiKeyMiddleware).forRoutes('*')
         consumer.apply(permissionMiddleware(PermissionApiKeyEnum.BASIC)).forRoutes('*')

@@ -4,12 +4,14 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { AppConfigService } from '@config/app/config.service';
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { createSwaggerConfig } from '@config/swagger/swagger.config';
+import { MyLogger } from '@common/loggers/logger.log';
 
 async function bootstrap() {
     const app: INestApplication = await NestFactory.create(AppModule)
 
     app.setGlobalPrefix('api')
     app.useGlobalPipes(new ValidationPipe())
+    app.useLogger(app.get(MyLogger))
 
     app.enableVersioning({
         type: VersioningType.URI,

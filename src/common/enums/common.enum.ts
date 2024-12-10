@@ -26,3 +26,11 @@ export enum HeaderApiEnum {
 export enum PermissionApiKeyEnum {
     BASIC = "0000"
 }
+
+export enum LoggerLevelEnum {
+    ERROR = 'error',
+    WARN = 'warn',
+    INFO = 'info',
+    DEBUG = 'debug',
+    REQUEST_ID = 'requestId'
+}
