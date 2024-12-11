@@ -52,3 +52,12 @@ export const convertToObjectId = (id: string) => {
 
     return new Types.ObjectId(id)
 }
+
+
+export const replacePlaceholder = (template: string, params: AnyObject) => {
+    Object.keys(params).forEach(key => {
+        template = template.replace(new RegExp(`{{${key}}}`, 'g'), params[key])
+    })
+
+    return template
+}

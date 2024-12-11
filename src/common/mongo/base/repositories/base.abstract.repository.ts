@@ -37,7 +37,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         if (populate) {
             query.populate(populate)
         }
-        return await query.exec()
+        return await query.lean()
     }
 
     async findOneByCondition(
@@ -49,7 +49,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         if (populate) {
             query.populate(populate)
         }
-        return await query.exec()
+        return await query.lean()
     }
 
     async find(

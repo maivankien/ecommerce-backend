@@ -27,7 +27,7 @@ export class ShopService extends BaseServiceAbstract<Shop> {
     }
 
     public async createShop(input: Shop) {
-        const holderShopExists = await this.shopRepository.findOneByCondition({ name: input.email }, { _id: 1 })
+        const holderShopExists = await this.shopRepository.findOneByCondition({ email: input.email }, { _id: 1 })
 
         if (holderShopExists) throw new ConflictException('Shop already exists')
 
