@@ -46,7 +46,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         this.logger.error(errorMessage, [
             request.path,
             { requestId: request.requestId },
-            JSON.stringify(exception)
+            exception instanceof Error ? exception.stack : 'No stack trace available'
         ])
 
         response.status(status).json({

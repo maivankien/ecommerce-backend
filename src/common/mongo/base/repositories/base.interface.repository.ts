@@ -3,6 +3,8 @@ import { FilterQuery, ProjectionType, QueryOptions, PopulateOptions, UpdateQuery
 export interface BaseRepositoryInterface<T> {
     create(dto: T): Promise<T>
 
+    createMany(dtoList: T[]): Promise<T[]>
+
     findOneById(
         id: string,
         projection?: ProjectionType<T>,

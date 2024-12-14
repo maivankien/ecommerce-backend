@@ -26,6 +26,10 @@ export class ShopService extends BaseServiceAbstract<Shop> {
         super(shopRepository)
     }
 
+    public getShopById(id: string, select: string[]) {
+        return this.shopRepository.findOneById(id, select)
+    }
+
     public async createShop(input: Shop) {
         const holderShopExists = await this.shopRepository.findOneByCondition({ email: input.email }, { _id: 1 })
 

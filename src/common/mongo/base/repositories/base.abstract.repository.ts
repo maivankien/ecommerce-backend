@@ -14,6 +14,10 @@ export abstract class BaseRepositoryAbstract<T extends BaseMongoDBEntity>
         return result
     }
 
+    async createMany(dtoList: T[]): Promise<T[]> {
+        return await this.model.insertMany(dtoList)
+    }
+
     async findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>): Promise<T> {
         return await this.model.findOneAndUpdate(filter, update, options).lean()
     }

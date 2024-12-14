@@ -30,6 +30,7 @@ import { AuthenticationMiddleware } from "@common/middlewares/auth/authenticatio
         }
     ],
     controllers: [ShopController],
+    exports: [ShopService]
 })
 export class ShopModule {
     configure(consumer: MiddlewareConsumer) {
