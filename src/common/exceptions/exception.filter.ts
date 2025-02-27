@@ -49,6 +49,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
             exception instanceof Error ? exception.stack : 'No stack trace available'
         ])
 
+        if (exception instanceof Error && exception?.["code"] === "ENOENT") {
+            status = HttpStatus.NOT_FOUND
+            message = { message: 'Not found', statusCode: status }
+            return response.status(status).json(message)
+        }
+
         response.status(status).json({
             statusCode: status,
             message: 'Internal server error',
