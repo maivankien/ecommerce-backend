@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
@@ -24,6 +25,9 @@ async function bootstrap() {
     app.enableCors()
 
     const document = SwaggerModule.createDocument(app, swaggerConfig)
+
+    fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2))
+    
     SwaggerModule.setup('docs', app, document, {
         customSiteTitle: 'Backend Ecommerce API',
         swaggerOptions: {

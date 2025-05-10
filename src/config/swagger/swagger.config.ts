@@ -14,6 +14,7 @@ export const createSwaggerConfig = () => {
         .addSecurityRequirements('Client-Id')
         .addSecurityRequirements('Authorization')
         .addSecurityRequirements('Refresh-Token')
+        .addServer(process.env.APP_URL)
         .setVersion('1.0')
         .build()
 }
