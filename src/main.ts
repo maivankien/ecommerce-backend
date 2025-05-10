@@ -6,6 +6,8 @@ import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common
 import { createSwaggerConfig } from '@config/swagger/swagger.config';
 import { MyLogger } from '@common/loggers/logger.log';
 
+declare const module: any
+
 async function bootstrap() {
     const app: INestApplication = await NestFactory.create(AppModule)
 
@@ -34,5 +36,10 @@ async function bootstrap() {
     const appConfig: AppConfigService = app.get(AppConfigService)
 
     await app.listen(appConfig.port)
+
+    if (module.hot) {
+        module.hot.accept();
+        module.hot.dispose(() => app.close())
+    }
 }
 bootstrap()

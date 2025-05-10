@@ -34,7 +34,7 @@ export class Product extends BaseMongoDBEntity {
     @Prop({ required: true })
     product_quantity: number
 
-    @Prop({ required: true, enum: ProductTypeEnum })
+    @Prop({ type: String, required: true, enum: ProductTypeEnum })
     product_type: ProductTypeEnum
 
     @Prop({ required: true, type: Types.ObjectId, ref: Shop.name })

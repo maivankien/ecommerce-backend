@@ -24,6 +24,7 @@ export class Shop extends BaseMongoDBEntity {
     password: string
 
     @Prop({
+        type: String,
         required: true,
         enum: StatusShopEnum,
         default: StatusShopEnum.INACTIVE

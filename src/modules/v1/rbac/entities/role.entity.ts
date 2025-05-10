@@ -29,6 +29,7 @@ export class Grant {
 })
 export class Role extends BaseMongoDBEntity {
     @Prop({
+        type: String,
         default: RoleNameEnum.USER,
         enum: RoleNameEnum,
     })
@@ -38,6 +39,7 @@ export class Role extends BaseMongoDBEntity {
     slug: string
 
     @Prop({
+        type: String,
         default: RoleStatusEnum.PENDING,
         enum: RoleStatusEnum,
     })

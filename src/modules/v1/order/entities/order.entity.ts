@@ -78,7 +78,7 @@ export class Order extends BaseMongoDBEntity {
     @Prop({ required: true, index: true })
     order_tracking_number: string
 
-    @Prop({ required: true, enum: OrderStatusEnum, default: OrderStatusEnum.PENDING })
+    @Prop({ type: String, required: true, enum: OrderStatusEnum, default: OrderStatusEnum.PENDING })
     order_status: OrderStatusEnum
 }
 
